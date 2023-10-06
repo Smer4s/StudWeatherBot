@@ -8,7 +8,7 @@ namespace StudWeatherBot.Bot.Data
 {
     public static class TelegramBotConsts
     {
-        private static readonly Dictionary<string, string> commands = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> commands = new()
         {
             {"/help", "Все команды" },
             {"/weather", $"Погода сейчас {DevTag}" },

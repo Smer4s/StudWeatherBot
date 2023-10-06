@@ -1,9 +1,17 @@
-﻿using StudWeatherBot.Bot.Data;
+﻿using MultiWeatherApi.DarkSky.Model;
+using MultiWeatherApi.DarkSky;
+using MultiWeatherApi.OpenWeather;
+using MultiWeatherApi.OpenWeather.Model;
+using StudWeatherBot.Bot.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using HtmlAgilityPack;
+using StudWeatherBot.Weather.Common;
+using StudWeatherBot.Weather;
 
 namespace StudWeatherBot.Bot.Logic
 {
@@ -15,7 +23,8 @@ namespace StudWeatherBot.Bot.Logic
             var sb = new StringBuilder();
 
             sb.AppendLine("С помощью этих команд ты можешь узнать информацию о погоде и получать уведомления.\n" +
-                $"Команды, помеченые тегом {TelegramBotConsts.DevTag} пока что в разработке либо не работают:(\n");
+                "Команды, помеченые тегом " + TelegramBotConsts.DevTag + " пока что в разработке либо не работают:(\n");
+
             foreach (var command in commands)
             {
                 sb.AppendLine($"{command.Key} : {command.Value}");
@@ -23,5 +32,13 @@ namespace StudWeatherBot.Bot.Logic
 
             return sb.ToString();
         }
+
+        public async static Task<string> GetWeather()
+        {
+            var weather = await WeatherUpdater.GetWeather();
+
+            return weather.ParseWeather();
+        }
+
     }
 }

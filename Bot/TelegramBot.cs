@@ -42,8 +42,10 @@ public class TelegramBot
             string replyText = text switch
             {
                 "/help" => TelegramBotCommands.GetAllCommands(),
+                "/weather" => await TelegramBotCommands.GetWeather(),
                 _ => "Неизвестная команда, используйте /help",
-            };
+            } ;
+
             await _botClient.SendTextMessageAsync(chatId, replyText);
         }
     }
