@@ -98,11 +98,9 @@ namespace StudWeatherBot.Weather
                 }
             }
 
-            weatherVerbose.MorningTemperature += float.Parse(temperatures.First()
-                .SelectSingleNode("//span[@class='unit unit_temperature_c']").InnerText);
+            weatherVerbose.MorningTemperature += float.Parse(temperatures[3].ChildNodes.First().InnerText);
 
-            weatherVerbose.EveningTemperature += float.Parse(temperatures.Last()
-                .SelectSingleNode("//span[@class='unit unit_temperature_c']").InnerText);
+            weatherVerbose.EveningTemperature += float.Parse(temperatures[6].ChildNodes.First().InnerText);
         }
 
         private static void GetGismeteoWeather(IDictionary<string, HtmlDocument> docs, TotalWeather result)
