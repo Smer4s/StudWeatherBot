@@ -35,10 +35,16 @@ namespace StudWeatherBot.Bot.Logic
 
         public async static Task<string> GetWeather()
         {
-            var weather = await WeatherUpdater.GetWeather();
+            var weather = await WeatherUpdater.GetWeatherAsync();
 
             return weather.ParseWeather();
         }
 
+        public async static Task<string> GetWeatherVerbose()
+        {
+            var weather = await WeatherUpdater.GetWeatherVerboseAsync();
+
+            return weather.ParseWeather();
+        }
     }
 }

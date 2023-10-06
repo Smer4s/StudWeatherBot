@@ -43,8 +43,9 @@ public class TelegramBot
             {
                 "/help" => TelegramBotCommands.GetAllCommands(),
                 "/weather" => await TelegramBotCommands.GetWeather(),
+                "/weatherverbose" => await TelegramBotCommands.GetWeatherVerbose(),
                 _ => "Неизвестная команда, используйте /help",
-            } ;
+            };
 
             await _botClient.SendTextMessageAsync(chatId, replyText);
         }

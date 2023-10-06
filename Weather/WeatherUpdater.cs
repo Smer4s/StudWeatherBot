@@ -9,13 +9,16 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudWeatherAsyncBot.WeatherAsync
+namespace StudWeatherBot.Weather
 {
-    public static class WeatherAsyncUpdater
+    public static class WeatherUpdater
     {
+        private const string OPENWEATHERAPIKEY = "544f02b0dd946f3d4dab2c3c89ade944";
+        private const string GISMETEOURL = "https://www.gismeteo.by/weather-minsk-4248/now/";
+
         private static TotalWeather _weather;
         private static TotalWeatherVerbose _weatherVerbose;
-        private static DateTime _lastUpdateTime;
+        private static int _lastUpdateTime;
         public async static Task<TotalWeather> GetWeatherAsync()
         {
 
@@ -33,31 +36,50 @@ namespace StudWeatherAsyncBot.WeatherAsync
 
         private async static Task UpdateWeatherAsync()
         {
-            if (DateTime.Now.Hour > _lastUpdateTime.Hour)
+            if (DateTime.Now.Hour > _lastUpdateTime)
             {
-                _lastUpdateTime = DateTime.Now;
+                _lastUpdateTime = DateTime.Now.Hour;
+                IOpenWeatherService client = new OpenWeatherService(OPENWEATHERAPIKEY);
+                var weather = await client.GetCurrentWeather("minsk", OWUnit.Metric, MultiWeatherApi.Model.Language.Russian);
 
                 _weather = new TotalWeather();
 
-                await GetOpenApiWeatherAsync(_weather);
-                GetGismeteoWeatherAsync(_weather);
+                GetOpenApiWeather(weather, _weather);
+                GetGismeteoWeather(_weather);
 
                 _weatherVerbose = new TotalWeatherVerbose();
 
-                await GetOpenApiWeatherVerboseAsync(_weatherVerbose);
+                GetOpenApiWeatherVerbose(weather, _weatherVerbose);
             }
         }
 
-        private static Task GetOpenApiWeatherVerboseAsync(TotalWeatherVerbose weatherVerbose)
+        private static void GetOpenApiWeatherVerbose(WeatherConditions weather, TotalWeatherVerbose result)
         {
-            
+            GetOpenApiWeather(weather, result);
+
+            if (weather.Temperature.Pressure is not null)
+            {
+                result.Pressure += (float)weather.Temperature.Pressure;
+            }
+
+            if (weather.Temperature.Min is not null)
+            {
+                result.EveningTemperature += (float)weather.Temperature.Min;
+            }
+
+            if (weather.Temperature.Max is not null)
+            {
+                result.MorningTemperature += (float)weather.Temperature.Max;
+            }
+
+            if (weather.Temperature.Humidity is not null)
+            {
+                result.Humidity += (float)weather.Temperature.Humidity;
+            }
         }
 
-        private async static Task GetOpenApiWeatherAsync(TotalWeather result)
+        private static void GetOpenApiWeather(WeatherConditions weather, TotalWeather result)
         {
-            IOpenWeatherService client = new OpenWeatherService("544f02b0dd946f3d4dab2c3c89ade944");
-            var weather = await client.GetCurrentWeather("minsk", OWUnit.Metric, MultiWeatherApi.Model.Language.Russian);
-
             if (weather.Temperature.Daily is not null)
             {
                 result.Temperature += (float)weather.Temperature.Daily;
@@ -73,10 +95,10 @@ namespace StudWeatherAsyncBot.WeatherAsync
             result.WeatherCount++;
         }
 
-        private static void GetGismeteoWeatherAsync(TotalWeather result)
+        private static void GetGismeteoWeather(TotalWeather result)
         {
             using var webClient = new WebClient();
-            string htmlContent = webClient.DownloadString("https://www.gismeteo.by/weather-minsk-4248/now/");
+            string htmlContent = webClient.DownloadString(GISMETEOURL);
             var doc = new HtmlDocument();
             doc.LoadHtml(htmlContent);
             result.Temperature += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='weather-value']")
