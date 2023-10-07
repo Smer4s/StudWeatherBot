@@ -8,19 +8,27 @@ namespace StudWeatherBot.Weather.Common
 {
     public class TotalWeatherVerbose : TotalWeather
     {
-        public double EveningTemperature { get; set; }
-        public double MorningTemperature { get; set; }
-        public double Humidity { get; set; }
-        public double Pressure { get; set; }
+        public WeatherPair EveningTemperature { get; set; }
+        public WeatherPair MorningTemperature { get; set; }
+        public WeatherPair Humidity { get; set; }
+        public WeatherPair Pressure { get; set; }
+
+        public TotalWeatherVerbose() : base()
+        {
+            EveningTemperature = new();
+            MorningTemperature = new();
+            Humidity = new();
+            Pressure = new();
+        }
 
         public override TotalWeatherVerbose GetTotalWeather()
         {
             var result = new TotalWeatherVerbose()
             {
-                EveningTemperature = Math.Round(EveningTemperature / WeatherCount, 2),
-                MorningTemperature = Math.Round(MorningTemperature / WeatherCount, 2),
-                Humidity = Math.Round(Humidity/WeatherCount),
-                Pressure = Math.Round(Pressure/WeatherCount)
+                EveningTemperature = WeatherPair.Evaluate(EveningTemperature),
+                MorningTemperature = WeatherPair.Evaluate(MorningTemperature),
+                Humidity = WeatherPair.Evaluate(Humidity,0),
+                Pressure = WeatherPair.Evaluate(Pressure,0),
             };
             AddWeather(result, base.GetTotalWeather());
 

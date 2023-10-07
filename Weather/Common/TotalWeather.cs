@@ -8,24 +8,28 @@ namespace StudWeatherBot.Weather.Common
 {
     public class TotalWeather
     {
-        public int WeatherCount { get; set; }
-        public double Temperature { get; set; }
-        public double ApparentTemperature { get; set; }
-        public double WindSpeed { get; set; }
+        public WeatherPair Temperature { get; set; }
+        public WeatherPair ApparentTemperature { get; set; }
+        public WeatherPair WindSpeed { get; set; }
         public string? Description { get; set; }
         public DateTime RequestedDateTime { get; set; }
 
+        public TotalWeather()
+        {
+            Temperature = new();
+            ApparentTemperature = new();
+            WindSpeed = new();
+        }
+
         public virtual TotalWeather GetTotalWeather()
         {
-            var result = new TotalWeather
+            return new TotalWeather()
             {
-                Temperature = Math.Round(Temperature / WeatherCount, 2),
-                ApparentTemperature = Math.Round(ApparentTemperature / WeatherCount, 2),
-                WindSpeed = Math.Round(WindSpeed / WeatherCount, 2),
+                Temperature = WeatherPair.Evaluate(Temperature),
+                ApparentTemperature = WeatherPair.Evaluate(ApparentTemperature),
+                WindSpeed = WeatherPair.Evaluate(WindSpeed),
                 Description = Description
             };
-
-            return result;
         }
     }
 }

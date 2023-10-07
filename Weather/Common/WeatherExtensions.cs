@@ -23,10 +23,10 @@ namespace StudWeatherBot.Weather.Common
             var sb = new StringBuilder();
             sb.AddWeather(weather);
 
-            sb.AppendLine("Температура утром: " + weather.MorningTemperature + " °C");
-            sb.AppendLine("Температура ночью: " + weather.EveningTemperature + " °C");
-            sb.AppendLine("Влажность: " + weather.Humidity + " %");
-            sb.AppendLine("Давление: " + weather.Pressure + " мм рт. ст.");
+            sb.AppendLine("Температура утром: " + weather.MorningTemperature.Value + " °C");
+            sb.AppendLine("Температура ночью: " + weather.EveningTemperature.Value + " °C");
+            sb.AppendLine("Влажность: " + weather.Humidity.Value + " %");
+            sb.AppendLine("Давление: " + weather.Pressure.Value + " мм рт. ст.");
 
             return sb.ToString();
         }
@@ -35,9 +35,9 @@ namespace StudWeatherBot.Weather.Common
         {
             sb.AppendLine($"Информация о погоде в Минске в {DateTime.UtcNow.AddHours(3).ToShortTimeString()}");
 
-            sb.AppendLine("Средняя температура: " + weather.Temperature + " °C");
-            sb.AppendLine("Ощущается как: " + weather.ApparentTemperature + " °C");
-            sb.AppendLine("Скорость ветра: " + weather.WindSpeed + " м/с");
+            sb.AppendLine("Средняя температура: " + weather.Temperature.Value + " °C");
+            sb.AppendLine("Ощущается как: " + weather.ApparentTemperature.Value + " °C");
+            sb.AppendLine("Скорость ветра: " + weather.WindSpeed.Value + " м/с");
             sb.AppendLine("Общее состояние: " + weather.Description);
 
             return sb;

@@ -17,22 +17,22 @@ namespace StudWeatherBot.Weather
         private const string GISMETEOURLNOW = "https://www.gismeteo.by/weather-minsk-4248/now/";
         private const string GISMETEOURL = "https://www.gismeteo.by/weather-minsk-4248/";
 
-        private static TotalWeather _weather;
-        private static TotalWeatherVerbose _weatherVerbose;
+        private static TotalWeather? _weather;
+        private static TotalWeatherVerbose? _weatherVerbose;
         private static int _lastUpdateTime;
         public async static Task<TotalWeather> GetWeatherAsync()
         {
 
             await UpdateWeatherAsync();
 
-            return _weather.GetTotalWeather();
+            return _weather!.GetTotalWeather();
         }
 
         public async static Task<TotalWeatherVerbose> GetWeatherVerboseAsync()
         {
             await UpdateWeatherAsync();
 
-            return _weatherVerbose.GetTotalWeather();
+            return _weatherVerbose!.GetTotalWeather();
         }
 
         private async static Task UpdateWeatherAsync()
@@ -81,10 +81,10 @@ namespace StudWeatherBot.Weather
             GetGismeteoWeather(docs, weatherVerbose);
 
             var doc = docs["now"];
-            weatherVerbose.Pressure += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='unit unit_pressure_mm_hg']")
+            weatherVerbose.Pressure.Value += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='unit unit_pressure_mm_hg']")
                 .InnerText.Where(c => char.IsDigit(c)).ToArray()!);
             var value = doc.DocumentNode.SelectSingleNode("//div[@class='now-info-item humidity']").InnerText.Where(c => char.IsDigit(c)).ToArray();
-            weatherVerbose.Humidity += float.Parse(value);
+            weatherVerbose.Humidity.Value += float.Parse(value);
 
             doc = docs["today"];
             var temperatureNode = doc.DocumentNode.SelectSingleNode("//div[@class='widget-row-chart widget-row-chart-temperature row-with-caption']");
@@ -98,25 +98,23 @@ namespace StudWeatherBot.Weather
                 }
             }
 
-            weatherVerbose.MorningTemperature += float.Parse(temperatures[3].ChildNodes.First().InnerText);
+            weatherVerbose.MorningTemperature.Value += float.Parse(temperatures[3].ChildNodes.First().InnerText);
 
-            weatherVerbose.EveningTemperature += float.Parse(temperatures[6].ChildNodes.First().InnerText);
+            weatherVerbose.EveningTemperature.Value += float.Parse(temperatures[6].ChildNodes.First().InnerText);
         }
 
         private static void GetGismeteoWeather(IDictionary<string, HtmlDocument> docs, TotalWeather result)
         {
             var doc = docs["now"];
-            result.Temperature += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='weather-value']")
+            result.Temperature.Value += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='weather-value']")
                 .SelectSingleNode("//span[@class='unit unit_temperature_c']").InnerText);
 
-            result.ApparentTemperature += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='weather-feel']")
+            result.ApparentTemperature.Value += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='weather-feel']")
                 .SelectSingleNode("//span[@class='measure']").SelectSingleNode("//span[@class='unit unit_temperature_c']").InnerText);
 
-            result.WindSpeed += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='unit unit_wind_m_s']").InnerText.Where(c => char.IsDigit(c)).ToArray()!);
+            result.WindSpeed.Value += float.Parse(doc.DocumentNode.SelectSingleNode("//div[@class='unit unit_wind_m_s']").InnerText.Where(c => char.IsDigit(c)).ToArray()!);
 
             result.Description = doc.DocumentNode.SelectSingleNode("//div[@class='now-desc']").InnerText;
-
-            result.WeatherCount++;
         }
 
         private static void GetOpenApiWeatherVerbose(WeatherConditions weather, TotalWeatherVerbose result)
@@ -125,22 +123,22 @@ namespace StudWeatherBot.Weather
 
             if (weather.Temperature.Pressure is not null)
             {
-                result.Pressure += (float)weather.Temperature.Pressure;
+                result.Pressure.Value += (float)weather.Temperature.Pressure;
             }
 
             if (weather.Temperature.Min is not null)
             {
-                result.EveningTemperature += (float)weather.Temperature.Min;
+                result.EveningTemperature.Value += (float)weather.Temperature.Min;
             }
 
             if (weather.Temperature.Max is not null)
             {
-                result.MorningTemperature += (float)weather.Temperature.Max;
+                result.MorningTemperature.Value += (float)weather.Temperature.Max;
             }
 
             if (weather.Temperature.Humidity is not null)
             {
-                result.Humidity += (float)weather.Temperature.Humidity;
+                result.Humidity.Value += (float)weather.Temperature.Humidity;
             }
         }
 
@@ -148,18 +146,16 @@ namespace StudWeatherBot.Weather
         {
             if (weather.Temperature.Daily is not null)
             {
-                result.Temperature += (float)weather.Temperature.Daily;
+                result.Temperature.Value += (float)weather.Temperature.Daily;
             }
 
             if (weather.ApparentTemperature.Daily is not null)
             {
-                result.ApparentTemperature += (float)weather.ApparentTemperature.Daily;
+                result.ApparentTemperature.Value += (float)weather.ApparentTemperature.Daily;
             }
 
-            result.WindSpeed += weather.Wind.Speed;
+            result.WindSpeed.Value += weather.Wind.Speed;
 
-            result.WeatherCount++;
         }
-
     }
 }

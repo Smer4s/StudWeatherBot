@@ -46,8 +46,8 @@ public class TelegramBot
         var verboseWeather = await TelegramBotCommands.GetWeatherVerbose();
         var result = new List<InlineQueryResultArticle>()
         {
-            new InlineQueryResultArticle(queryId, "Погода в минске сейчас", new InputTextMessageContent(weather)),
-            new InlineQueryResultArticle(queryId, "Подробная погода в минске сейчас", new InputTextMessageContent(verboseWeather))
+            new InlineQueryResultArticle(Guid.NewGuid().ToString(), "Погода в минске сейчас", new InputTextMessageContent(weather)),
+            new InlineQueryResultArticle(Guid.NewGuid().ToString(), "Подробная погода в минске сейчас", new InputTextMessageContent(verboseWeather))
         };
 
         try
@@ -55,7 +55,15 @@ public class TelegramBot
             await _botClient.AnswerInlineQueryAsync(queryId, result);
         }
         catch (ApiRequestException)
-        { }
+        {
+            Update[]? updates;
+            int offset = 0;
+            do
+            {
+                updates = await _botClient.GetUpdatesAsync(offset);
+                offset = updates.Last().Id + 1;
+            } while (updates.Any());
+        }
     }
 
     private async Task HandleIncomingMessage(Message message)
