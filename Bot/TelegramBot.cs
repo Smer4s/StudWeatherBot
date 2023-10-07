@@ -1,6 +1,9 @@
 ﻿using Telegram.Bot.Types;
 using Telegram.Bot;
 using StudWeatherBot.Bot.Logic;
+using Telegram.Bot.Types.InlineQueryResults;
+using StudWeatherBot.Bot.Data;
+using Telegram.Bot.Exceptions;
 
 public class TelegramBot
 {
@@ -22,6 +25,10 @@ public class TelegramBot
 
             foreach (var update in updateOptions)
             {
+                if (update.InlineQuery is not null)
+                {
+                    await HandleInlineQuery(update.InlineQuery);
+                }
                 if (update.Message != null)
                 {
                     await HandleIncomingMessage(update.Message);
@@ -30,6 +37,25 @@ public class TelegramBot
                 offset = update.Id + 1;
             }
         }
+    }
+
+    private async Task HandleInlineQuery(InlineQuery query)
+    {
+        var queryId = query.Id;
+        var weather = await TelegramBotCommands.GetWeather();
+        var verboseWeather = await TelegramBotCommands.GetWeatherVerbose();
+        var result = new List<InlineQueryResultArticle>()
+        {
+            new InlineQueryResultArticle(queryId, "Погода в минске сейчас", new InputTextMessageContent(weather)),
+            new InlineQueryResultArticle(queryId, "Подробная погода в минске сейчас", new InputTextMessageContent(verboseWeather))
+        };
+
+        try
+        {
+            await _botClient.AnswerInlineQueryAsync(queryId, result);
+        }
+        catch (ApiRequestException)
+        { }
     }
 
     private async Task HandleIncomingMessage(Message message)
@@ -42,6 +68,7 @@ public class TelegramBot
             string replyText = text switch
             {
                 "/help" => TelegramBotCommands.GetAllCommands(),
+                "/start" => TelegramBotCommands.GetAllCommands(),
                 "/weather" => await TelegramBotCommands.GetWeather(),
                 "/weatherverbose" => await TelegramBotCommands.GetWeatherVerbose(),
                 _ => "Неизвестная команда, используйте /help",

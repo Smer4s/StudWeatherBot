@@ -23,7 +23,7 @@ namespace StudWeatherBot.Weather.Common
             var sb = new StringBuilder();
             sb.AddWeather(weather);
 
-            sb.AppendLine("Температура днём: " + weather.MorningTemperature + " °C");
+            sb.AppendLine("Температура утром: " + weather.MorningTemperature + " °C");
             sb.AppendLine("Температура ночью: " + weather.EveningTemperature + " °C");
             sb.AppendLine("Влажность: " + weather.Humidity + " %");
             sb.AppendLine("Давление: " + weather.Pressure + " мм рт. ст.");
@@ -33,7 +33,7 @@ namespace StudWeatherBot.Weather.Common
 
         private static StringBuilder AddWeather(this StringBuilder sb, TotalWeather weather)
         {
-            sb.AppendLine($"Информация о погоде в Минске в {DateTime.Now.ToShortTimeString()}");
+            sb.AppendLine($"Информация о погоде в Минске в {DateTime.UtcNow.AddHours(3).ToShortTimeString()}");
 
             sb.AppendLine("Средняя температура: " + weather.Temperature + " °C");
             sb.AppendLine("Ощущается как: " + weather.ApparentTemperature + " °C");

@@ -19,8 +19,8 @@ namespace StudWeatherBot.Weather.Common
             {
                 EveningTemperature = Math.Round(EveningTemperature / WeatherCount, 2),
                 MorningTemperature = Math.Round(MorningTemperature / WeatherCount, 2),
-                Humidity = Humidity,
-                Pressure = Pressure
+                Humidity = Math.Round(Humidity/WeatherCount),
+                Pressure = Math.Round(Pressure/WeatherCount)
             };
             AddWeather(result, base.GetTotalWeather());
 
