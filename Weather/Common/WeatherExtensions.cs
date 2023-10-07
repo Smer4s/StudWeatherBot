@@ -33,7 +33,7 @@ namespace StudWeatherBot.Weather.Common
 
         private static StringBuilder AddWeather(this StringBuilder sb, TotalWeather weather)
         {
-            sb.AppendLine($"Информация о погоде в Минске в {DateTime.UtcNow.AddHours(3).ToShortTimeString()}");
+            sb.AppendLine($"Информация о погоде в Минске в {TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Belarus Standard Time")).ToString("HH:mm", Thread.CurrentThread.CurrentCulture)}");
 
             sb.AppendLine("Средняя температура: " + weather.Temperature.Value + " °C");
             sb.AppendLine("Ощущается как: " + weather.ApparentTemperature.Value + " °C");

@@ -39,7 +39,7 @@ namespace StudWeatherBot.Weather
         {
             if (DateTime.Now.Hour > _lastUpdateTime)
             {
-                _lastUpdateTime = DateTime.Now.Hour;
+                _lastUpdateTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Belarus Standard Time")).Hour;
 
                 IOpenWeatherService client = new OpenWeatherService(OPENWEATHERAPIKEY);
                 var weather = await client.GetCurrentWeather("minsk", OWUnit.Metric, MultiWeatherApi.Model.Language.Russian);

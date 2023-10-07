@@ -8,11 +8,12 @@ namespace StudWeatherBot
         {
             TelegramBot telegramBot = new TelegramBot("6405433807:AAG1cCCh_cEmX76-rMfYgvOR6qrbkTX550o");
             CultureInfo belarusCulture = new CultureInfo("be-BY");
-            Thread.CurrentThread.CurrentCulture = belarusCulture;
-            Thread.CurrentThread.CurrentUICulture = belarusCulture;
-
+            Console.WriteLine("bot started");
+           
             var botThread = new Thread(async () =>
             {
+                Thread.CurrentThread.CurrentCulture = belarusCulture;
+                Thread.CurrentThread.CurrentUICulture = belarusCulture;
                 await telegramBot.StartReceivingMessages();
             });
 

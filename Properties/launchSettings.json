@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "StudWeatherBot": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
