@@ -4,6 +4,7 @@ using StudWeatherBot.Bot.Logic;
 using Telegram.Bot.Types.InlineQueryResults;
 using StudWeatherBot.Bot.Data;
 using Telegram.Bot.Exceptions;
+using System.Linq.Expressions;
 
 public class TelegramBot
 {
@@ -21,20 +22,27 @@ public class TelegramBot
 
         while (true)
         {
-            updateOptions = await _botClient.GetUpdatesAsync(offset);
-
-            foreach (var update in updateOptions)
+            try
             {
-                if (update.InlineQuery is not null)
-                {
-                    await HandleInlineQuery(update.InlineQuery);
-                }
-                if (update.Message != null)
-                {
-                    await HandleIncomingMessage(update.Message);
-                }
+                updateOptions = await _botClient.GetUpdatesAsync(offset);
 
-                offset = update.Id + 1;
+                foreach (var update in updateOptions)
+                {
+                    if (update.InlineQuery is not null)
+                    {
+                        await HandleInlineQuery(update.InlineQuery);
+                    }
+                    if (update.Message != null)
+                    {
+                        await HandleIncomingMessage(update.Message);
+                    }
+
+                    offset = update.Id + 1;
+                }
+            }
+            catch (ApiRequestException)
+            {
+                    // Doesn't need to stop updating when other instances exist
             }
         }
     }

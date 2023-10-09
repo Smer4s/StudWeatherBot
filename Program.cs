@@ -24,10 +24,9 @@ namespace StudWeatherBot
                         Thread.CurrentThread.CurrentUICulture = belarusCulture;
                         await telegramBot.StartReceivingMessages();
                     }
-                    catch (ApiRequestException e)
+                    catch (Exception e)
                     {
-                        Console.WriteLine(e.Message + ".\nException handled at a time: " + DateTime.UtcNow.AddHours(3));
-                        stop = false;
+                        Console.WriteLine(e);
                     }
                 });
                 botThread.Start();
