@@ -11,6 +11,7 @@ namespace StudWeatherBot
             TelegramBot telegramBot = new TelegramBot("6405433807:AAG1cCCh_cEmX76-rMfYgvOR6qrbkTX550o");
             CultureInfo belarusCulture = new CultureInfo("be-BY");
             Console.WriteLine("bot started");
+            Console.WriteLine("Write /stop to stop bot");
 
             bool stop = false;
             while (!stop)
@@ -31,7 +32,7 @@ namespace StudWeatherBot
                 });
                 botThread.Start();
 
-                stop = !string.IsNullOrEmpty(Console.ReadLine());
+                stop = Console.ReadLine() == "/stop";
             }
         }
     }
