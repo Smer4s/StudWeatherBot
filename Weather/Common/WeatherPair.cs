@@ -25,7 +25,7 @@ namespace StudWeatherBot.Weather.Common
 
         public WeatherPair()
         {
-            Count = 1;
+            Count = 0;
             value = 0;
         }
 
@@ -40,7 +40,7 @@ namespace StudWeatherBot.Weather.Common
             var pair = new WeatherPair();
 
             pair.Count = weather.Count;
-            pair.Value = Math.Round(weather.Value / weather.Count,digits);
+            pair.Value = Math.Round(weather.Value / (weather.Count == 0 ? 1 : weather.Count), digits);
 
             return pair;
         }
