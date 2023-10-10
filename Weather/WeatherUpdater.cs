@@ -19,7 +19,6 @@ namespace StudWeatherBot.Weather
 
         private static TotalWeather? _weather;
         private static TotalWeatherVerbose? _weatherVerbose;
-        private static int _lastUpdateTime;
         public async static Task<TotalWeather> GetWeatherAsync()
         {
 
@@ -37,29 +36,27 @@ namespace StudWeatherBot.Weather
 
         private async static Task UpdateWeatherAsync()
         {
-            if (DateTime.Now.Hour > _lastUpdateTime)
-            {
-                _lastUpdateTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Belarus Standard Time")).Hour;
 
-                IOpenWeatherService client = new OpenWeatherService(OPENWEATHERAPIKEY);
-                var weather = await client.GetCurrentWeather("minsk", OWUnit.Metric, MultiWeatherApi.Model.Language.Russian);
 
-                var docs = GetHtml(new Dictionary<string, string>()
+            IOpenWeatherService client = new OpenWeatherService(OPENWEATHERAPIKEY);
+            var weather = await client.GetCurrentWeather("minsk", OWUnit.Metric, MultiWeatherApi.Model.Language.Russian);
+
+            var docs = GetHtml(new Dictionary<string, string>()
                 {
                     {"today" ,GISMETEOURL },
                     {"now", GISMETEOURLNOW},
                 });
 
-                _weather = new TotalWeather();
+            _weather = new TotalWeather();
 
-                GetOpenApiWeather(weather, _weather);
-                GetGismeteoWeather(docs, _weather);
+            GetOpenApiWeather(weather, _weather);
+            GetGismeteoWeather(docs, _weather);
 
-                _weatherVerbose = new TotalWeatherVerbose();
+            _weatherVerbose = new TotalWeatherVerbose();
 
-                GetOpenApiWeatherVerbose(weather, _weatherVerbose);
-                GetGismeteoWeatherVerbose(docs, _weatherVerbose);
-            }
+            GetOpenApiWeatherVerbose(weather, _weatherVerbose);
+            GetGismeteoWeatherVerbose(docs, _weatherVerbose);
+
         }
 
         private static IDictionary<string, HtmlDocument> GetHtml(Dictionary<string, string> urls)
