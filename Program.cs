@@ -1,5 +1,6 @@
 ﻿using StudWeatherBot.Weather.Common;
 using System.Globalization;
+using System.Net.Sockets;
 using Telegram.Bot.Exceptions;
 
 namespace StudWeatherBot
@@ -18,16 +19,10 @@ namespace StudWeatherBot
             {
                 var botThread = new Thread(async () =>
                 {
-                    try
-                    {
-                        Thread.CurrentThread.CurrentCulture = belarusCulture;
-                        Thread.CurrentThread.CurrentUICulture = belarusCulture;
-                        await telegramBot.StartReceivingMessages();
-                    }
-                    catch (RequestException e)
-                    {
-                        Console.WriteLine(DateTime.UtcNow + e.ToString());
-                    }
+                    Thread.CurrentThread.CurrentCulture = belarusCulture;
+                    Thread.CurrentThread.CurrentUICulture = belarusCulture;
+
+                    await telegramBot.StartReceivingMessages();
                 });
                 botThread.Start();
 

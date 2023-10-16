@@ -42,7 +42,12 @@ public class TelegramBot
             }
             catch (ApiRequestException)
             {
-                    // Doesn't need to stop updating when other instances exist
+                // Doesn't need to stop updating when other instances exist
+            }
+            catch (RequestException ex)
+            {
+                Console.WriteLine(DateTime.UtcNow + " " + ex.ToString());
+                Thread.Sleep(TimeSpan.FromMinutes(5));
             }
         }
     }
