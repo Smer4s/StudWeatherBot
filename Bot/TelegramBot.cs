@@ -46,7 +46,6 @@ public class TelegramBot
             }
             catch (RequestException ex)
             {
-                Console.WriteLine(DateTime.UtcNow + " " + ex.ToString());
                 Thread.Sleep(TimeSpan.FromMinutes(5));
             }
         }
